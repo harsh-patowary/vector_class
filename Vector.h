@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstddef>
 #include <ostream>
 #include <stdexcept>
@@ -45,6 +47,10 @@ public:
 	Vector<double> normalize() const;
 	Vector(Vector&& other) noexcept;
 	Vector<T>& operator=(Vector&& other) noexcept;
+	T* begin()       { return m_data; }
+	T* end()         { return m_data + m_size; }
+	const T* begin() const { return m_data; }
+	const T* end()   const { return m_data + m_size; }
 };
 
 template<typename T>
@@ -130,7 +136,7 @@ Vector<T>& Vector<T>::operator=(const Vector& other){
 	m_size = other.m_size;
 	m_data = new T[m_size];
 	for(std::size_t i = 0; i < other.m_size; i++){ 
-		m_data[i] = other.m_data[i]; 
+m_data[i] = other.m_data[i]; 
 	}
 	return *this;
 }

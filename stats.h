@@ -1,0 +1,24 @@
+#ifndef STATS_H
+#define STATS_H
+
+#include "Vector.h"
+#include <numeric>   // Crucial for accumulate and inner_product
+#include <algorithm> // Crucial for min/max elements
+#include <cmath>     // Crucial for sqrt
+
+// 1. Mean (Average)
+double mean(const Vector<double>& v);
+
+// 2. Variance (Spread of data)
+double variance(const Vector<double>& v);
+
+// 3. Standard Deviation
+double stddev(const Vector<double>& v);
+
+// 4. Minimum Value
+double min_val(const Vector<double>& v);
+
+// 5. Maximum Value
+double max_val(const Vector<double>& v);
+
+#endif

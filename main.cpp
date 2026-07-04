@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include "stats.h"
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -134,7 +135,29 @@ int main(){
 
     	// 4. Valgrind will catch double-free if move left other in bad state
     	std::cout << "\n=== All Phase 6 Tests Passed ===\n";
+	
+	//5. Testing Iterator
+	for (auto x : moved_ass_vec) std::cout << x << " , ";
+	
+	const Vector<int> const_vec = moved_ass_vec;
+	for (auto x : const_vec) std::cout << x << " ";  // must compile — uses const begin()/end()
+	std::cout << "\n";	
+		
 
+	//STATS TEST DRIVE CODE
+
+	
+
+	Vector<double> data(5);
+	data[0] = 2.0; data[1] = 4.0; data[2] = 4.0; data[3] = 4.0; data[4] = 5.5;
+
+	std::cout << "Data: " << data << std::endl;
+	std::cout << "Mean: " << mean(data) << " (Expected: 3.9)" << std::endl;
+	std::cout << "Min: " << min_val(data) << " (Expected: 2.0)" << std::endl;
+	std::cout << "Max: " << max_val(data) << " (Expected: 5.5)" << std::endl;
+
+	// Variance calculation: 
+	std::cout << "Variance: " << variance(data) << std::endl;	
 
     	return 0; 
 }

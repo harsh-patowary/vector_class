@@ -9,6 +9,9 @@
 // 1. Mean (Average)
 double mean(const Vector<double>& v);
 
+double median(const Vector<double>& v);
+
+
 // 2. Variance (Spread of data)
 double variance(const Vector<double>& v);
 
@@ -20,5 +23,8 @@ double min_val(const Vector<double>& v);
 
 // 5. Maximum Value
 double max_val(const Vector<double>& v);
+
+// 6. Percentile 
+double percentile(const Vector<double>& v, double p);
 
 #endif

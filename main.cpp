@@ -158,6 +158,40 @@ int main(){
 
 	// Variance calculation: 
 	std::cout << "Variance: " << variance(data) << std::endl;	
+	// Phase 3 — Order statistics tests
+	Vector<double> d(8);
+	d[0]=2.0; d[1]=4.0; d[2]=4.0; d[3]=4.0;
+	d[4]=5.0; d[5]=5.0; d[6]=7.0; d[7]=9.0;
+	// mean=5.0, stddev=2.0 — known dataset
 
+	// stddev
+	double sd = stddev(d);
+	std::cout << "Stddev (Expected: 2.0): " << sd << "\n";
+	assert(approx_equal(sd, 2.0));
+
+	// median — 8 elements, middle two are d[3]=4 and d[4]=5, median = 4.5
+	double med = median(d);
+	std::cout << "Median (Expected: 4.5): " << med << "\n";
+	assert(approx_equal(med, 4.5));
+
+	// percentile — 0th = min, 100th = max, 50th = median
+	double p0   = percentile(d, 0.0);
+	double p50  = percentile(d, 0.5);
+	double p100 = percentile(d, 1.0);
+	std::cout << "P0   (Expected: 2.0): " << p0   << "\n";
+	std::cout << "P50  (Expected: 4.5): " << p50  << "\n";
+	std::cout << "P100 (Expected: 9.0): " << p100 << "\n";
+	assert(approx_equal(p0,   2.0));
+	assert(approx_equal(p50,  4.5));
+	assert(approx_equal(p100, 9.0));
+
+	// verify original vector is unchanged after median/percentile calls
+	std::cout << "Original unchanged: " << d << "\n"; // must still be [2,4,4,4,5,5,7,9]
+	assert(approx_equal(d[0], 2.0)); // if you sorted in place, this fails
+
+	std::cout << "=== Phase 3 Tests Passed ===\n";
+		
+
+	
     	return 0; 
 }

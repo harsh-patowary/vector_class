@@ -52,6 +52,7 @@ int main(){
 	Vector<int> result = v * 2;
 	std::cout << result << std::endl;
 	int scalar = v.dot(cel); 
+
 	std::cout << "Dot product :" << v << " . " << cel << ": "<< scalar <<  std::endl ;
 	//std::cout << scalar << std::endl;
 	
@@ -191,7 +192,96 @@ int main(){
 
 	std::cout << "=== Phase 3 Tests Passed ===\n";
 		
+	std::cout << "\n=== Testing Z-Score Normalisation ===\n";
 
+	Vector<double> raw_data(4);
+	raw_data[0] = 1.0; raw_data[1] = 2.0; raw_data[2] = 3.0; raw_data[3] = 4.0;
+
+	Vector<double> z_scaled = z_score_normalise(raw_data);
+	std::cout << "Z-Scaled Vector: " << z_scaled << std::endl;
+
+	// The new mean MUST be 0 and the new stddev MUST be 1
+	std::cout << "New Mean (Expected: 0.0): " << mean(z_scaled) << std::endl;
+	std::cout << "New Stddev (Expected: 1.0): " << stddev(z_scaled) << std::endl;
+
+	assert(approx_equal(mean(z_scaled), 0.0));
+	assert(approx_equal(stddev(z_scaled), 1.0));
 	
-    	return 0; 
+	// 10 values, 5 bins — each bin should have 2 elements
+	Vector<double> h(10);
+	for (int i = 0; i < 10; ++i) h[i] = i * 1.0; // 0,1,2,...,9
+	auto hist = histogram(h, 5);
+	for (int count : hist) std::cout << count << " "; // expect: 2 2 2 2 2
+	std::cout << "\n";
+	// Test 1: Uniform distribution — each bin should have exactly 2
+	Vector<double> h1(10);
+	for (int i = 0; i < 10; ++i) h1[i] = i * 1.0; // 0,1,2,...,9
+	auto hist1 = histogram(h1, 5);
+	std::cout << "Test 1 - Uniform (expect 2 2 2 2 2): ";
+	for (int c : hist1) std::cout << c << " ";
+	std::cout << "\n";
+	assert(hist1[0]==2 && hist1[1]==2 && hist1[2]==2 && hist1[3]==2 && hist1[4]==2);
+
+	// Test 2: All values identical — everything in bin 0
+	Vector<double> h2(5);
+	h2.fill(3.0);
+	auto hist2 = histogram(h2, 4);
+	std::cout << "Test 2 - All same (expect 5 0 0 0): ";
+	for (int c : hist2) std::cout << c << " ";
+	std::cout << "\n";
+	assert(hist2[0]==5 && hist2[1]==0 && hist2[2]==0 && hist2[3]==0);
+
+	// Test 3: Sum of all bins must equal number of elements — always
+	Vector<double> h3(8);
+	h3[0]=2.0; h3[1]=4.0; h3[2]=4.0; h3[3]=4.0;
+	h3[4]=5.0; h3[5]=5.0; h3[6]=7.0; h3[7]=9.0;
+	auto hist3 = histogram(h3, 3);
+	int total = 0;
+	for (int c : hist3) total += c;
+	std::cout << "Test 3 - Sum equals n (expect 8): " << total << "\n";
+	assert(total == 8);
+
+	// Test 4: Max value must land in last bin, not overflow
+	Vector<double> h4(3);
+	h4[0]=1.0; h4[1]=5.0; h4[2]=10.0;
+	auto hist4 = histogram(h4, 3);
+	std::cout << "Test 4 - Max in last bin (expect 1 1 1): ";
+	for (int c : hist4) std::cout << c << " ";
+	std::cout << "\n";
+	assert(hist4[2] == 1); // 10.0 must be in bin 2, not overflow
+
+	// Test 5: Single element
+	Vector<double> h5(1);
+	h5[0] = 42.0;
+	auto hist5 = histogram(h5, 4);
+	int total5 = 0;
+	for (int c : hist5) total5 += c;
+	std::cout << "Test 5 - Single element sum (expect 1): " << total5 << "\n";
+	assert(total5 == 1);
+
+	std::cout << "=== All histogram tests passed ===\n";
+    		
+
+	// Verify the original vector is unchanged after median/percentile calls
+	std::cout << "Original unchanged: " << d << "\n"; 
+	assert(approx_equal(d[0], 2.0)); 
+
+	// THE FINAL BOSS: Print the absolute summary table!
+	print_summary(d);
+
+	std::cout << "=== Phase 3 Tests Passed ===\n";
+	
+
+	// Verify the original vector is unchanged after median/percentile calls
+	std::cout << "Original unchanged: " << d << "\n"; 
+	assert(approx_equal(d[0], 2.0)); 
+
+	// THE FINAL BOSS: Print the absolute summary table!
+	print_summary(d);
+
+	std::cout << "=== Phase 3 Tests Passed ===\n";
+
+
+
+	return 0; 
 }

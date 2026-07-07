@@ -1,4 +1,6 @@
 #include "stats.h"
+#include <iomanip>
+#include <iostream> 
 #include <numeric>   // For std::accumulate
 #include <algorithm> // For std::min_element
 
@@ -61,3 +63,90 @@ double percentile(const Vector<double>& v, double p){
 	return copy[lower_idx] + fraction * (copy[upper_idx] - copy[lower_idx]);
 }
 
+Vector<double> z_score_normalise(const Vector<double>& v){
+	//thinking...... mf
+	if (v.size() == 0 ) return Vector<double>::zeros(0);
+	double sd = stddev(v);
+	double m = mean(v);
+	if (sd == 0.0){
+		throw std::runtime_error("Cannot Z-score normalise a vector with zero standard deviation");
+	}
+	Vector<double> result(v.size());
+	std::transform(
+		v.begin(),
+		v.end(),
+		result.begin(),
+		[m, sd](double x){
+			return (x - m)/ sd;
+	});
+
+	return result;
+	
+}
+
+std::vector<int> histogram(const Vector<double>& v, int bins){
+	if (v.size() == 0 || bins <= 0) return std::vector<int>();
+	double lo = min_val(v);
+	double hi = max_val(v);
+	double bin_width = (hi - lo) / bins;
+	std::vector<int> result(bins, 0);
+	if (hi == lo){
+		result[0] = v.size();
+		return result;
+	}
+
+	for (double x : v){
+		int bin_idx = static_cast<int>((x - lo) / bin_width);
+
+		if (bin_idx >= bins){
+      			bin_idx = bins - 1;
+		}
+		result[bin_idx]++;
+	}
+	return result;
+}
+
+void print_summary(const Vector<double>& v){
+	//string bc = "█";
+	// 1. Gather all statistical data points
+	//std::size_t n = v.size();
+	double m     = mean(v);
+	double sd    = stddev(v);
+	double min_v = min_val(v);
+	double max_v = max_val(v);
+	double med   = median(v);
+	double p25   = percentile(v, 0.25);
+	double p75   = percentile(v, 0.75);
+	// Set precision to 3 decimal places for floating points
+	std::cout << std::fixed << std::setprecision(3);
+	std::cout << std::left << std::setw(12) << "Mean"   << ": " << m     << "\n";
+	std::cout << std::left << std::setw(12) << "Stddev" << ": " << sd    << "\n";
+	std::cout << std::left << std::setw(12) << "Min"    << ": " << min_v << "\n";
+	std::cout << std::left << std::setw(12) << "Max"    << ": " << max_v << "\n";
+	std::cout << std::left << std::setw(12) << "Median" << ": " << med   << "\n";
+	std::cout << std::left << std::setw(12) << "P25"    << ": " << p25   << "\n";
+	std::cout << std::left << std::setw(12) << "P75"    << ": " << p75   << "\n";
+	int num_bins = 4;
+	std::vector<int> counts = histogram(v, num_bins);
+	std::cout << "Histogram (" << num_bins << " bins):\n";
+	double bin_width = (max_v - min_v) / num_bins;
+	for (int i = 0; i < num_bins; ++i){
+		double bin_start = min_v + i * bin_width;
+        	double bin_end = bin_start + bin_width;
+		std::cout << "[";
+		std::cout << std::setw(5) << std::setprecision(1) << bin_start;
+		std::cout << " - ";
+		std::cout << std::setw(5) << std::setprecision(1) << bin_end;
+		// Match standard notation: last bin closing bracket is inclusive ']'
+		if (i == num_bins - 1) {
+		    std::cout << "] | ";
+		} else {
+		    std::cout << ") | ";
+		}
+
+		// Build the visual block string. 
+		// If using '█' gives your terminal encoding issues, swap it out for "#" or "*"!
+		std::string bar(counts[i] * 2, '#'); 
+		std::cout << std::left << std::setw(10) << bar << " | " << counts[i] << "\n";
+	}
+}

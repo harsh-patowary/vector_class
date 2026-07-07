@@ -2,6 +2,7 @@
 #define STATS_H
 
 #include "Vector.h"
+#include <vector>
 #include <numeric>   // Crucial for accumulate and inner_product
 #include <algorithm> // Crucial for min/max elements
 #include <cmath>     // Crucial for sqrt
@@ -26,5 +27,11 @@ double max_val(const Vector<double>& v);
 
 // 6. Percentile 
 double percentile(const Vector<double>& v, double p);
+
+Vector<double> z_score_normalise(const Vector<double>& v);
+
+std::vector<int> histogram(const Vector<double>& v, int bins);
+
+void print_summary(const Vector<double>& v);
 
 #endif

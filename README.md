@@ -151,6 +151,50 @@ vector-class/
 - No Python bindings (pybind11 planned)
 - Benchmarks are informal — no Google Benchmark integration yet
 
+
+## Stats module
+
+A statistics pipeline (`stats.h` / `stats.cpp`) built on top of `Vector<T>` using STL algorithms from `<algorithm>` and `<numeric>`. No manual loops where an STL function exists.
+
+### Functions
+
+| Function | STL used | Description |
+|----------|----------|-------------|
+| `mean(v)` | `std::accumulate` | Arithmetic mean |
+| `variance(v)` | `std::inner_product` | Population variance |
+| `stddev(v)` | — | Square root of variance |
+| `min_val(v)` | `std::min_element` | Minimum element |
+| `max_val(v)` | `std::max_element` | Maximum element |
+| `median(v)` | `std::nth_element` | Middle value (copy, not in-place) |
+| `percentile(v, p)` | `std::sort` | Linear interpolation, NumPy type-7 convention |
+| `z_score_normalise(v)` | `std::transform` | Returns new vector with mean=0, stddev=1 |
+| `histogram(v, bins)` | `std::count_if` | Returns bin counts as `std::vector<int>` |
+| `print_summary(v)` | — | Prints full statistical report with ASCII histogram |
+
+### Example output
+
+```
+=== Phase 3 Tests Passed ===
+Original unchanged: [2.0,4.0,4.0,4.0,5.0,5.0,7.0,9.0]
+Mean        : 5.000
+Stddev      : 2.000
+Min         : 2.000
+Max         : 9.000
+Median      : 4.500
+P25         : 4.000
+P75         : 5.500
+Histogram (4 bins):
+[2.0   - 3.8  ) | ##         | 1
+[3.8   - 5.5  ) | ########## | 5
+[5.5   - 7.2  ) | ##         | 1
+[7.2   - 9.0  ] | ##         | 1
+```
+
+
+### Design note
+
+`median()` and `percentile()` both copy the input vector before sorting — the original is never modified. `percentile()` uses linear interpolation between adjacent ranks (equivalent to NumPy's default `method='linear'`).
+
 ---
 
 ## License

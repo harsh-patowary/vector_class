@@ -40,6 +40,10 @@ double median(const Vector<double>& V){
 	}
 
 }
+
+// Uses the "linear interpolation between closest ranks" method (type 7 in R).
+// This matches NumPy's default: numpy.percentile(data, p, interpolation='linear')
+// P75 of [2,4,4,4,5,5,7,9] returns 5.5, not 6.0.
 double percentile(const Vector<double>& v, double p){
 	if (v.size() == 0) return 0.0;
 	if(p < 0.0 || p > 1.0) throw std::invalid_argument("Percentile p must be between 0.0 and 1.0");

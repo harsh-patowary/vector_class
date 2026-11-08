@@ -24,7 +24,7 @@ double variance(const Vector<double>& V){
 	return ( sum / V.size() ) - (mean(V) * mean(V));
 }
 double stddev(const Vector<double>& v){
-	return std::sqrt(variance(v));
+	return std::sqrt(variance(v)); 
 }
 double median(const Vector<double>& V){
 	if (V.size() == 0) return 0.0;

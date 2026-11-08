@@ -1,3 +1,2 @@
-/home/rix/projects/cpp/vector_class/build/CMakeFiles/main.dir
 /home/rix/projects/cpp/vector_class/build/CMakeFiles/edit_cache.dir
 /home/rix/projects/cpp/vector_class/build/CMakeFiles/rebuild_cache.dir
